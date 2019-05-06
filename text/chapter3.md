@@ -92,8 +92,8 @@ Records correspond to JavaScript's objects, and record literals have the same sy
 > author = { name: "Phil", interests: ["Functional Programming", "JavaScript"] }
 
 > :type author
-{ name :: String
-, interests :: Array String
+{ interests :: Array String
+, name :: String
 }
 ```
 
@@ -392,10 +392,10 @@ $ pulp repl
 > import Data.List
 > :type Cons
 
-forall a. a -> List a -> List a
+forall t1. t1 -> List t1 -> List t1
 ```
 
-This type signature says that `Cons` takes a value of some type `a`, and a list of elements of type `a`, and returns a new list with entries of the same type. Let's specialize this with `a` as our `Entry` type:
+This type signature says that `Cons` takes a value of some type `t1`, and a list of elements of type `t1`, and returns a new list with entries of the same type. Let's specialize this with `t1` as our `Entry` type:
 
 ```haskell
 Entry -> List Entry -> List Entry
@@ -608,6 +608,57 @@ filter filterEntry >>> head
 Either way, this gives a clear definition of the `findEntry` function: "`findEntry` is the composition of a filtering function and the `head` function".
 
 I will let you make your own decision which definition is easier to understand, but it is often useful to think of functions as building blocks in this way - each function executing a single task, and solutions assembled using function composition.
+
+## Tests, Tests, Tests ...
+
+Now that we have the core of a working application, let's try it out using PSCi.
+
+```text
+$ pulp repl
+
+> import Data.AddressBook
+```
+
+Let's first try looking up an entry in the empty address book (we obviously expect this to return an empty result):
+
+```text
+> findEntry "John" "Smith" emptyBook
+Nothing
+```
+
+
+The return type of `findEntry` is `Maybe Entry`, which we can convert to a `String` by hand.
+
+Our `showEntry` function expects an argument of type `Entry`, but we have a value of type `Maybe Entry`. Remember that this means that the function returns an optional value of type `Entry`. What we need to do is apply the `showEntry` function if the optional value is present, and propagate the missing value if not.
+
+Fortunately, the Prelude module provides a way to do this. The `map` operator can be used to lift a function over an appropriate type constructor like `Maybe` (we'll see more on this function, and others like it, later in the book, when we talk about functors):
+
+```text
+> import Prelude
+> map showEntry (findEntry "John" "Smith" emptyBook)
+
+Nothing
+```
+
+That's better - the return value `Nothing` indicates that the optional return value does not contain a value - just as we expected.
+
+For ease of use, we can create a function which prints an `Entry` as a String, so that we don't have to use `showEntry` every time:
+
+```text
+> printEntry firstName lastName book = map showEntry (findEntry firstName lastName book)
+```
+
+Now let's create a non-empty address book, and try again. We'll reuse our example entry from earlier:
+
+```text
+> book1 = insertEntry entry emptyBook
+
+> printEntry "John" "Smith" book1
+
+Just ("Smith, John: 123 Fake St., Faketown, CA")
+```
+
+This time, the result contained the correct value. Try defining an address book `book2` with two names by inserting another name into `book1`, and look up each entry by name.
 
  ## Exercises
 

@@ -204,6 +204,7 @@ Again, strings and arrays are simple examples of monoids.
 A `Monoid` type class instance for a type describes how to _accumulate_ a result with that type, by starting with an "empty" value, and combining new results. For example, we can write a function which concatenates an array of values in some monoid by using a fold. In PSCi:
 
 ```haskell
+> import Data.Semigroup
 > import Data.Monoid
 > import Data.Foldable
 
@@ -239,6 +240,7 @@ Let's try out `foldMap` in PSCi:
 
 ```text
 > import Data.Foldable
+> import Data.Show
 
 > foldMap show [1, 2, 3, 4, 5]
 "12345"
@@ -403,11 +405,11 @@ When the program is compiled, the correct type class instance for `Show` is chos
 ## Exercises
  1. (Easy) The following declaration defines a type of non-empty arrays of elements of type `a`:
 
-    ```haskell
-    data NonEmpty a = NonEmpty a (Array a)
-    ```
-
-    Write an `Eq` instance for the type `NonEmpty a` which reuses the instances for `Eq a` and `Eq (Array a)`.
+     ```haskell
+     data NonEmpty a = NonEmpty a (Array a)
+     ```
+      
+     Write an `Eq` instance for the type `NonEmpty a` which reuses the instances for `Eq a` and `Eq (Array a)`.
  1. (Medium) Write a `Semigroup` instance for `NonEmpty a` by reusing the `Semigroup` instance for `Array`.
  1. (Medium) Write a `Functor` instance for `NonEmpty`.
  1. (Medium) Given any type `a` with an instance of `Ord`, we can add a new "infinite" value which is greater than any other value:
@@ -415,8 +417,8 @@ When the program is compiled, the correct type class instance for `Show` is chos
      ```haskell
      data Extended a = Finite a | Infinite
      ```
-
-    Write an `Ord` instance for `Extended a` which reuses the `Ord` instance for `a`.
+         
+     Write an `Ord` instance for `Extended a` which reuses the `Ord` instance for `a`.
  1. (Difficult) Write a `Foldable` instance for `NonEmpty`. _Hint_: reuse the `Foldable` instance for arrays.
  1. (Difficult) Given an type constructor `f` which defines an ordered container (and so has a `Foldable` instance), we can create a new container type which includes an extra element at the front:
 
@@ -427,9 +429,9 @@ When the program is compiled, the correct type class instance for `Show` is chos
      The container `OneMore f` also has an ordering, where the new element comes before any element of `f`. Write a `Foldable` instance for `OneMore f`:
 
      ```haskell
-     instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
-     ...
+     instance foldableOneMore :: Foldable f => Foldable (OneMore f) where ...
      ```
+
 
 ## Multi Parameter Type Classes
 

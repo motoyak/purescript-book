@@ -649,7 +649,7 @@ Try out the new version in PSCi - you should get the same result. I'll let you d
 
      ```text
      > whereIs "/bin/ls"
-     Just (/bin/)
+     (Just /bin/)
      
      > whereIs "/bin/cat"
      Nothing

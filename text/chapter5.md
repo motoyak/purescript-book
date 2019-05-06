@@ -172,7 +172,12 @@ Record patterns provide a good example of an interesting feature of the PureScri
 > showPerson { first: x, last: y } = y <> ", " <> x
 
 > :type showPerson
-forall r. { first :: String, last :: String | r } -> String
+forall r.
+  { first :: String
+  , last :: String
+  | r
+  }
+  -> String
 ```
 
 What is the type variable `r` here? Well, if we try `showPerson` in PSCi, we see something interesting:
@@ -337,10 +342,9 @@ redundantCase false = false
 In this case, the last case is correctly identified as redundant:
 
 ```text
-Redundant cases have been detected.
-The definition has the following redundant cases:
+A case expression contains unreachable cases:
 
-  false
+    false
 ```
 
 _Note_: PSCi does not show warnings, so to reproduce this example, you will need to
