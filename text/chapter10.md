@@ -109,7 +109,7 @@ The good news is that PureScript expressions have particularly simple representa
 
 For simple types, the correspondence is almost trivial. For example, if an expression has the type `Boolean`, then its value `v` at runtime should satisfy `typeof v === 'boolean'`. That is, expressions of type `Boolean` evaluate to one of the (JavaScript) values `true` or `false`. In particular, there is no PureScript expression of type `Boolean` which evaluates to `null` or `undefined`.
 
-A similar law holds for expressions of type `Int` `Number` and `String` - expressions of type `Int` or `Number` evaluate to non-null JavaScript numbers, and expressions of type `String` evaluate to non-null JavaScript strings. Expressions of type `Int` will evaluate to integers at runtime, even though they cannot not be distinguished from values of type `Number` by using `typeof`.
+A similar law holds for expressions of type `Int` `Number` and `String` - expressions of type `Int` or `Number` evaluate to non-null JavaScript numbers, and expressions of type `String` evaluate to non-null JavaScript strings. Expressions of type `Int` will evaluate to integers at runtime, even though they cannot be distinguished from values of type `Number` by using `typeof`.
 
 What about some more complex types?
 
@@ -428,7 +428,7 @@ We can create a function of two arguments by using the `mkFn2` function, as foll
 import Data.Function.Uncurried
 
 add :: Fn2 Int Int Int
-add = mkFn2 \n m -> m + n 
+add = mkFn2 \n m -> m + n
 ```
 
 and we can apply a function of two arguments by using the `runFn2` function:
@@ -554,7 +554,7 @@ The type of `getItem` is more interesting. It takes a key, and attempts to retri
 
 In this section, we will see how we can use the `Foreign` library to turn untyped data into typed data, with the correct runtime representation for its type.
 
-The code for this chapter demonstrates how a record can be serialized to JSON and stored in / retrieved from local storage. 
+The code for this chapter demonstrates how a record can be serialized to JSON and stored in / retrieved from local storage.
 
 The `Main` module defines a type for the saved form data:
 
@@ -638,7 +638,7 @@ Real-world JSON documents contain null and undefined values, so we need to be ab
 (Right Nothing)
 ```
 
-The type `Maybe Int` represents values which are either integers, or null. What if we wanted to parse more interesting values, like arrays of integers, where each element might be `null`? `decodeJSON` handles such cases as well: 
+The type `Maybe Int` represents values which are either integers, or null. What if we wanted to parse more interesting values, like arrays of integers, where each element might be `null`? `decodeJSON` handles such cases as well:
 
 ```text
 > runExcept (decodeJSON "[1,2,null]" :: F (Array (Maybe Int)))
