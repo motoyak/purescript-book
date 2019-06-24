@@ -629,6 +629,7 @@ Real-world JSON documents contain null and undefined values, so we need to be ab
 
 ```text
 > import Prelude
+> import Data.Maybe
 > import Foreign.NullOrUndefined
 
 > runExcept (decodeJSON "42" :: F (Maybe Int))
