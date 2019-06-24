@@ -686,6 +686,7 @@ Now, in our main function, a value of type `FormData` is passed to the `encode` 
 Our `Decode` type class instance is used with `decodeJSON` to parse the JSON document when it is retrieved from local storage, as follows:
 
 ```haskell
+loadSavedData :: Effect (Maybe FormData)
 loadSavedData = do
   item <- getItem "person"
 
