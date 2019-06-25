@@ -691,7 +691,7 @@ loadSavedData = do
   item <- getItem "person"
 
   let
-    savedData :: Either (NonEmptyList ForeignError) (Maybe FormData)
+    savedData :: Either MultipleErrors (Maybe FormData)
     savedData = runExcept do
       jsonOrNull <- traverse readString =<< readNullOrUndefined item
       traverse decodeJSON jsonOrNull
