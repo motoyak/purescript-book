@@ -8,11 +8,11 @@ The goal of this chapter will be to learn about _monad transformers_, which prov
 
 This module's project introduces the following new Bower dependencies:
 
-- `purescript-maps`, which provides a data type for immutable maps
-- `purescript-sets`, which provides a data type for immutable sets
+- `purescript-ordered-collections`, which provides a data type for immutable maps and sets
 - `purescript-transformers`, which provides implementations of standard monad transformers
 - `purescript-node-readline`, which provides FFI bindings to the [`readline`](http://nodejs.org/api/readline.html) interface provided by NodeJS
 - `purescript-yargs`, which provides an applicative interface to the [`yargs`](https://www.npmjs.org/package/yargs) command line argument processing library
+- `purescript-string`, which provides some operations for string
 
 It is also necessary to install the `yargs` module using NPM:
 
@@ -86,7 +86,7 @@ The game is very simple, but the aim of the chapter is to use the `purescript-tr
 
 We will start by looking at some of the monads provided by the `purescript-transformers` package.
 
-The first example is the `State` monad, which provides a way to model _mutable state_ in pure code. We have already seen two approaches to mutable state provided by the `Eff` monad, namely the `REF` and `ST` effects. `State` provides a third alternative, but it is not implemented using the `Eff` monad.
+The first example is the `State` monad, which provides a way to model _mutable state_ in pure code. We have already seen two approaches to mutable state provided by the `Effect` monad, namely the `REF` and `ST` effects. `State` provides a third alternative, but it is not implemented using the `Effect` monad.
 
 The `State` type constructor takes two type parameters: the type `s` of the state, and the return type `a`. Even though we speak of the "`State` monad", the instance of the `Monad` type class is actually provided for the `State s` type constructor, for any type `s`.
 
@@ -98,7 +98,7 @@ put    :: forall s. s        -> State s Unit
 modify :: forall s. (s -> s) -> State s Unit
 ```
 
-This looks very similar to the API provided by the `REF` and `ST` effects. However, notice that we do not pass a mutable reference cell such as a `Ref` or `STRef` to the actions. The difference between `State` and the solutions provided by the `Eff` monad is that the `State` monad only supports a single piece of state which is implicit - the state is implemented as a function argument hidden by the `State` monad's data constructor, so there is no explicit reference to pass around.
+This looks very similar to the API provided by the `REF` and `ST` effects. However, notice that we do not pass a mutable reference cell such as a `Ref` or `STRef` to the actions. The difference between `State` and the solutions provided by the `Effecct` monad is that the `State` monad only supports a single piece of state which is implicit - the state is implemented as a function argument hidden by the `State` monad's data constructor, so there is no explicit reference to pass around.
 
 Let's see an example. One use of the `State` monad might be to add the values in an array of numbers to the current state. We could do that by choosing `Number` as the state type `s`, and using `traverse_` to traverse the array, with a call to `modify` for each array element:
 
@@ -138,7 +138,7 @@ Given the `sumArray` function above, we could use `execState` in PSCi to sum the
  1. (Easy) What is the result of replacing `execState` with `runState` or `evalState` in our example above?
  1. (Medium) A string of parentheses is _balanced_ if it is obtained by either concatenating zero-or-more shorter balanced
      strings, or by wrapping a shorter balanced string in a pair of parentheses.
-     
+
      Use the `State` monad and the `traverse_` function to write a function
 
      ```haskell
@@ -151,13 +151,13 @@ Given the `sumArray` function above, we could use `execState` in PSCi to sum the
      ```text
      > testParens ""
      true
-     
+
      > testParens "(()(())())"
      true
-     
+
      > testParens ")"
      false
-     
+
      > testParens "(()()"
      false
      ```
@@ -223,7 +223,7 @@ runReader :: forall r a. Reader r a -> r -> a
 
     ```haskell
     type Level = Int
-    
+
     type Doc = Reader Level String
     ```
 
