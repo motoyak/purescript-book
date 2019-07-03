@@ -221,13 +221,13 @@ runReader :: forall r a. Reader r a -> r -> a
 
  In these exercises, we will use the `Reader` monad to build a small library for rendering documents with indentation. The "global configuration" will be a number indicating the current indentation level:
 
-    ```haskell
-    type Level = Int
+```haskell
+type Level = Int
 
-    type Doc = Reader Level String
-    ```
+type Doc = Reader Level String
+```
 
- 1. (Easy) Write a function `line` which renders a function at the current indentation level. Your function should have the following type:
+ 1. (Easy) Write a function `line` which renders a string at the current indentation level. Your function should have the following type:
 
      ```haskell
      line :: String -> Doc
