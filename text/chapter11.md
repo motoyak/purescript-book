@@ -357,7 +357,7 @@ Each of the three monads above: `State`, `Reader` and `Writer`, are also example
 
 What is a monad transformer? Well, as we have seen, a monad augments PureScript code with some type of side effect, which can be interpreted in PureScript by using the appropriate handler (`runState`, `runReader`, `runWriter`, etc.) This is fine if we only need to use _one_ side-effect. However, it is often useful to use more than one side-effect at once. For example, we might want to use `Reader` together with `Maybe` to express _optional results_ in the context of some global configuration. Or we might want the mutable state provided by the `State` monad together with the pure error tracking capability of the `Either` monad. This is the problem solved by _monad transformers_.
 
-Note that we have already seen that the `Eff` monad provides a partial solution to this problem, since native effects can be interleaved using the approach of _extensible effects_. Monad transformers provide another solution, and each approach has its own benefits and limitations.
+Note that we have already seen that the `Effect` monad provides a partial solution to this problem, since native effects can be interleaved using the approach of _extensible effects_. Monad transformers provide another solution, and each approach has its own benefits and limitations.
 
 A monad transformer is a type constructor which is parameterized not only by a type, but by another type constructor. It takes one monad and turns it into another monad, adding its own variety of side-effects.
 

@@ -651,7 +651,7 @@ and open `html/index.html`. You should see the Koch curve rendered to the canvas
 
      Render this L-system. _Note_: you will need to decrease the number of iterations of the production rules, since the size of the final sentence grows exponentially with the number of iterations.
 
-     Now, notice the symmetry between `L` and `M` in the production rules. The two "move forward" instructions can be differentiated using a `Boolean` value using the following alphabet type:
+     Now, notice the symmetry between `F` and `M` in the production rules. The two "move forward" instructions can be differentiated using a `Boolean` value using the following alphabet type:
 
      ```haskell
      data Alphabet = L | R | F Boolean
