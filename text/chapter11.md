@@ -494,7 +494,7 @@ Note that only those log messages which were written before the error was thrown
 
 As we have seen, monad transformers can be used to build new monads on top of existing monads. For some monad transformer `t1` and some monad `m`, the application `t1 m` is also a monad. That means that we can apply a _second_ monad transformer `t2` to the result `t1 m` to construct a third monad `t2 (t1 m)`. In this way, we can construct a _stack_ of monad transformers, which combine the side-effects provided by their constituent monads.
 
-In practice, the underlying monad `m` is either the `Eff` monad, if native side-effects are required, or the `Identity` monad, defined in the `Data.Identity` module. The `Identity` monad adds no new side-effects, so transforming the `Identity` monad only provides the effects of the monad transformer. In fact, the `State`, `Reader` and `Writer` monads are implemented by transforming the `Identity` monad with `StateT`, `ReaderT` and `WriterT` respectively.
+In practice, the underlying monad `m` is either the `Effect` monad, if native side-effects are required, or the `Identity` monad, defined in the `Data.Identity` module. The `Identity` monad adds no new side-effects, so transforming the `Identity` monad only provides the effects of the monad transformer. In fact, the `State`, `Reader` and `Writer` monads are implemented by transforming the `Identity` monad with `StateT`, `ReaderT` and `WriterT` respectively.
 
 Let's see an example in which three side effects are combined. We will use the `StateT`, `WriterT` and `ExceptT` effects, with the `Identity` monad on the bottom of the stack. This monad transformer stack will provide the side effects of mutable state, accumulating a log, and pure errors.
 
