@@ -600,7 +600,7 @@ split = do
   s <- get
   tell ["The state is " <> show s]
   case s of
-    "" -> throwError "Empty string"
+    "" -> throwError ["Empty string"]
     _ -> do
       put (drop 1 s)
       pure (take 1 s)
