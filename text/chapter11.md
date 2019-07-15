@@ -906,22 +906,21 @@ runRWS :: forall r w s a. RWS r w s a -> r -> s -> RWSResult s a w
 The front-end of our application is defined by a function `runGame`, with the following type signature:
 
 ```haskell
-runGame
-  :: GameEnvironment -> Effect Unit
+runGame :: GameEnvironment -> Effect Unit
 ```
 
 The `CONSOLE` effect indicates that this function interacts with the user via the console (using the `purescript-node-readline` and `purescript-console` packages). `runGame` takes the game configuration as a function argument.
 
-The `purescript-node-readline` package provides the `LineHandler` type, which represents actions in the `Eff` monad which handle user input from the terminal. Here is the corresponding API:
+The `purescript-node-readline` package provides the `LineHandler` type, which represents actions in the `Effect` monad which handle user input from the terminal. Here is the corresponding API:
 
 ```haskell
-type LineHandler eff a = String -> Eff eff a
+type LineHandler a = String -> Effect a
 
 setLineHandler
-  :: forall eff a
+  :: forall a
    . Interface
-  -> LineHandler (readline :: READLINE | eff) a
-  -> Eff (readline :: READLINE | eff) Unit
+  -> LineHandler a
+  -> Effect Unit
 ```
 
 The `Interface` type represents a handle for the console, and is passed as an argument to the functions which interact with it. An `Interface` can be created using the `createConsoleInterface` function:
