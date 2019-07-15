@@ -907,13 +907,7 @@ The front-end of our application is defined by a function `runGame`, with the fo
 
 ```haskell
 runGame
-  :: forall eff
-   . GameEnvironment
-  -> Eff ( exception :: EXCEPTION
-         , readline :: RL.READLINE
-         , console :: CONSOLE
-         | eff
-         ) Unit
+  :: GameEnvironment -> Effect Unit
 ```
 
 The `CONSOLE` effect indicates that this function interacts with the user via the console (using the `purescript-node-readline` and `purescript-console` packages). `runGame` takes the game configuration as a function argument.
