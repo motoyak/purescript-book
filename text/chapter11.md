@@ -938,13 +938,9 @@ In our case, we are interested in implementing the line handler function. Our li
 lineHandler
   :: GameState
   -> String
-  -> Eff ( exception :: EXCEPTION
-         , console :: CONSOLE
-         , readline :: RL.READLINE
-         | eff
-         ) Unit
+  -> Effect Unit
 lineHandler currentState input = do
-  case runRWS (game (split " " input)) env currentState of
+  case runRWS (game (split (wrap " ") input)) env currentState of
     RWSResult state _ written -> do
       for_ written log
       setLineHandler interface $ lineHandler state
