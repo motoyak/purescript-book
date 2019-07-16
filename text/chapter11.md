@@ -917,10 +917,7 @@ The `purescript-node-readline` package provides the `LineHandler` type, which re
 type LineHandler a = String -> Effect a
 
 setLineHandler
-  :: forall a
-   . Interface
-  -> LineHandler a
-  -> Effect Unit
+  :: forall a . Interface -> LineHandler a -> Effect Unit
 ```
 
 The `Interface` type represents a handle for the console, and is passed as an argument to the functions which interact with it. An `Interface` can be created using the `createConsoleInterface` function:
