@@ -977,10 +977,7 @@ The final piece of the application is responsible for parsing command line optio
 `purescript-yargs` is an example of _applicative command line option parsing_. Recall that an applicative functor allows us to lift functions of arbitrary arity over a type constructor representing some type of side-effect. In the case of the `purescript-yargs` package, the functor we are interested in is the `Y` functor, which adds the side-effect of reading from command line options. It provides the following handler:
 
 ```haskell
-runY :: forall a eff.
-          YargsSetup ->
-          Y (Eff (exception :: EXCEPTION, console :: CONSOLE | eff) a) ->
-             Eff (exception :: EXCEPTION, console :: CONSOLE | eff) a
+runY :: forall a. YargsSetup -> Y (Effect a) -> Effect a
 ```
 
 This is best illustrated by example. The application's `main` function is defined using `runY` as follows:
