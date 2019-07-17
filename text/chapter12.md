@@ -24,7 +24,7 @@ function readText(onSuccess, onFailure) {
       onFailure(error.code);
     } else {
       onSuccess(data);
-    }   
+    }
   });
 }
 ```
@@ -45,7 +45,7 @@ function copyFile(onSuccess, onFailure) {
           onSuccess();
         }
       });
-    }   
+    }
   });
 }
 ```
@@ -71,7 +71,7 @@ function copyFile(onSuccess, onFailure) {
       onFailure(error.code);
     } else {
       writeCopy(data, onSuccess, onFailure);
-    }   
+    }
   });
 }
 ```
@@ -89,7 +89,7 @@ Let's translate the `copyFile` example above into PureScript by using the FFI. I
 
 _Note_: in practice, it is not necessary to write these functions by hand every time. Asynchronous file IO functions can be found in the `purescript-node-fs` and `purescript-node-fs-aff` libraries.
 
-First, we need to gives types to `readFile` and `writeFile` using the FFI. Let's start by defining some type synonyms, and a new effect for file IO:
+First, we need to give types to `readFile` and `writeFile` using the FFI. Let's start by defining some type synonyms, and a new effect for file IO:
 
 ```haskell
 foreign import data FS :: Effect
@@ -104,11 +104,10 @@ In our case, we will wrap `readFile` with a function which takes two callbacks: 
 
 ```haskell
 foreign import readFileImpl
-  :: forall eff
-   . Fn3 FilePath
-         (String -> Eff (fs :: FS | eff) Unit)
-         (ErrorCode -> Eff (fs :: FS | eff) Unit)
-         (Eff (fs :: FS | eff) Unit)
+  :: Fn3 FilePath
+         (String -> Effect Unit)
+         (ErrorCode -> Effect Unit)
+         (Eff Unit)
 ```
 
 In the foreign Javascript module, `readFileImpl` would be defined as:
@@ -137,12 +136,11 @@ You should try to understand why this implementation has the correct runtime rep
 
 ```haskell
 foreign import writeFileImpl
-  :: forall eff
-   . Fn4 FilePath
+  :: Fn4 FilePath
          String
-         (Eff (fs :: FS | eff) Unit)
-         (ErrorCode -> Eff (fs :: FS | eff) Unit)
-         (Eff (fs :: FS | eff) Unit)
+         (Effect Unit)
+         (ErrorCode -> Effect Unit)
+         (Effect Unit)
 ```
 
 ```javascript
@@ -455,7 +453,7 @@ We can also combine parallel computations with sequential portions of code, by u
      ```javascript
      { references: ['/tmp/1.json', '/tmp/2.json'] }
      ```
-     
+
      Write a utility which takes a single filename as input, and spiders the JSON files on disk referenced transitively by that file, collecting a list of all referenced files.
 
      Your utility should use the `purescript-foreign` library to parse the JSON documents, and should fetch files referenced by a single file in parallel.
