@@ -107,7 +107,7 @@ foreign import readFileImpl
   :: Fn3 FilePath
          (String -> Effect Unit)
          (ErrorCode -> Effect Unit)
-         (Eff Unit)
+         (Effect Unit)
 ```
 
 In the foreign Javascript module, `readFileImpl` would be defined as:
