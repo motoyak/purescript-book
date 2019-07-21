@@ -165,10 +165,9 @@ In addition, instead of requiring two callbacks, one for successes and one for f
 
 ```haskell
 readFile
-  :: forall eff
-   . FilePath
-  -> (Either ErrorCode String -> Eff (fs :: FS | eff) Unit)
-  -> Eff (fs :: FS | eff) Unit
+  FilePath
+  -> (Either ErrorCode String -> Effect Unit)
+  -> Effect Unit
 readFile path k =
   runFn3 readFileImpl
          path
@@ -176,11 +175,10 @@ readFile path k =
          (k <<< Left)
 
 writeFile
-  :: forall eff
-   . FilePath
+  FilePath
   -> String
-  -> (Either ErrorCode Unit -> Eff (fs :: FS | eff) Unit)
-  -> Eff (fs :: FS | eff) Unit
+  -> (Either ErrorCode Unit -> Effect Unit)
+  -> Effect Unit
 writeFile path text k =
   runFn4 writeFileImpl
          path
@@ -189,7 +187,7 @@ writeFile path text k =
          (k <<< Left)
 ```
 
-Now we can spot an important pattern. Each of these functions takes a callback which returns a value in some monad (in this case `Eff (fs :: FS | eff)`) and returns a value in _the same monad_. This means that when the first callback returns a result, that monad can be used to bind the result to the input of the next asynchronous function. In fact, that's exactly what we did by hand in the `copyFile` example.
+Now we can spot an important pattern. Each of these functions takes a callback which returns a value in some monad (in this case `Effect`) and returns a value in _the same monad_. This means that when the first callback returns a result, that monad can be used to bind the result to the input of the next asynchronous function. In fact, that's exactly what we did by hand in the `copyFile` example.
 
 This is the basis of the _continuation monad transformer_, which is defined in the `Control.Monad.Cont.Trans` module in `purescript-transformers`.
 
@@ -201,30 +199,28 @@ newtype ContT r m a = ContT ((a -> m r) -> m r)
 
 A _continuation_ is just another name for a callback. A continuation captures the _remainder_ of a computation - in our case, what happens after a result has been provided after an asynchronous call.
 
-The argument to the `ContT` data constructor looks remarkably similar to the types of `readFile` and `writeFile`. In fact, if we take the type `a` to be the type `Either ErrorCode String`, `r` to be `Unit` and `m` to be the monad `Eff (fs :: FS | eff)`, we recover the right-hand side of the type of `readFile`.
+The argument to the `ContT` data constructor looks remarkably similar to the types of `readFile` and `writeFile`. In fact, if we take the type `a` to be the type `Either ErrorCode String`, `r` to be `Unit` and `m` to be the monad `Effect`, we recover the right-hand side of the type of `readFile`.
 
 This motivates the following type synonym, defining an `Async` monad, which we will use to compose asynchronous actions like `readFile` and `writeFile`:
 
 ```haskell
-type Async eff = ContT Unit (Eff eff)
+type Async eff = ContT Unit Effect
 ```
 
-For our purposes, we will always use `ContT` to transform the `Eff` monad, and the type `r` will always be `Unit`, but this is not required.
+For our purposes, we will always use `ContT` to transform the `Effect` monad, and the type `r` will always be `Unit`, but this is not required.
 
 We can treat `readFile` and `writeFile` as computations in the `Async` monad, by simply applying the `ContT` data constructor:
 
 ```haskell
 readFileCont
-  :: forall eff
-   . FilePath
-  -> Async (fs :: FS | eff) (Either ErrorCode String)
+  FilePath
+  -> Async (Either ErrorCode String)
 readFileCont path = ContT $ readFile path
 
 writeFileCont
-  :: forall eff
-   . FilePath
+  FilePath
   -> String
-  -> Async (fs :: FS | eff) (Either ErrorCode Unit)
+  -> Async (Either ErrorCode Unit)
 writeFileCont path text = ContT $ writeFile path text
 ```
 
@@ -232,10 +228,9 @@ With that, we can write our copy-file routine by simply using do notation for th
 
 ```haskell
 copyFileCont
-  :: forall eff
-   . FilePath
+  FilePath
   -> FilePath
-  -> Async (fs :: FS | eff) (Either ErrorCode Unit)
+  -> Async (Either ErrorCode Unit)
 copyFileCont src dest = do
   e <- readFileCont src
   case e of
@@ -270,9 +265,8 @@ main =
      foreign import data TIMEOUT :: Effect
 
      setTimeoutCont
-       :: forall eff
-        . Milliseconds
-       -> Async (timeout :: TIMEOUT | eff) Unit
+      Milliseconds
+       -> Async Unit
      ```
 
 ## Putting ExceptT To Work
