@@ -204,7 +204,7 @@ The argument to the `ContT` data constructor looks remarkably similar to the typ
 This motivates the following type synonym, defining an `Async` monad, which we will use to compose asynchronous actions like `readFile` and `writeFile`:
 
 ```haskell
-type Async eff = ContT Unit Effect
+type Async = ContT Unit Effect
 ```
 
 For our purposes, we will always use `ContT` to transform the `Effect` monad, and the type `r` will always be `Unit`, but this is not required.
