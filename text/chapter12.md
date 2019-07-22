@@ -128,7 +128,7 @@ exports.readFileImpl = function(path, onSuccess, onFailure) {
 };
 ```
 
-This type signature indicates that `readFileImpl` takes three arguments: a file path, a success callback and an error callback, and returns an effectful computation which returns an empty (`Unit`) result. Notice that the callbacks themselves are given types which use the `Eff` monad to track their effects.
+This type signature indicates that `readFileImpl` takes three arguments: a file path, a success callback and an error callback, and returns an effectful computation which returns an empty (`Unit`) result. Notice that the callbacks themselves are given types which use the `Effect monad to track their effects.
 
 You should try to understand why this implementation has the correct runtime representation for its type.
 
