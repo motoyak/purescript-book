@@ -264,9 +264,7 @@ main =
 
      foreign import data TIMEOUT :: Effect
 
-     setTimeoutCont
-      Milliseconds
-       -> Async Unit
+     setTimeoutCont :: Milliseconds -> Async Unit
      ```
 
 ## Putting ExceptT To Work
@@ -285,16 +283,14 @@ newtype ExceptT e m a = ExceptT (m (Either e a))
 
 ```haskell
 readFileContEx
-  :: forall eff
-   . FilePath
-  -> ExceptT ErrorCode (Async (fs :: FS | eff)) String
+  :: FilePath
+  -> ExceptT ErrorCode Async String
 readFileContEx path = ExceptT $ readFileCont path
 
 writeFileContEx
-  :: forall eff
-   . FilePath
+  :: FilePath
   -> String
-  -> ExceptT ErrorCode (Async (fs :: FS | eff)) Unit
+  -> ExceptT ErrorCode Async Unit
 writeFileContEx path text = ExceptT $ writeFileCont path text
 ```
 
@@ -302,10 +298,9 @@ Now, our copy-file routine is much simpler, since the asynchronous error handlin
 
 ```haskell
 copyFileContEx
-  :: forall eff
-   . FilePath
+  :: FilePath
   -> FilePath
-  -> ExceptT ErrorCode (Async (fs :: FS | eff)) Unit
+  -> ExceptT ErrorCode Async Unit
 copyFileContEx src dest = do
   content <- readFileContEx src
   writeFileContEx dest content
@@ -337,16 +332,13 @@ We will recreate this simple example in PureScript using the `Async` monad.
 In the `Network.HTTP.Client` module, the `request` method is wrapped with a function `getImpl`:
 
 ```haskell
-foreign import data HTTP :: Effect
-
 type URI = String
 
 foreign import getImpl
-  :: forall eff
-   . Fn3 URI
-         (String -> Eff (http :: HTTP | eff) Unit)
-         (String -> Eff (http :: HTTP | eff) Unit)
-         (Eff (http :: HTTP | eff) Unit)
+  :: Fn3 URI
+         (String -> Effect Unit)
+         (String -> Effect Unit)
+         (Effect Unit)
 ```
 
 ```javascript
@@ -366,9 +358,9 @@ exports.getImpl = function(uri, done, fail) {
 Again, we can use the `Data.Function.Uncurried` module to turn this into a regular, curried PureScript function. As before, we turn the two callbacks into a single callback, this time accepting a value of type `Either String String`, and apply the `ContT` constructor to construct an action in our `Async` monad:
 
 ```haskell
-get :: forall eff.
+get ::
   URI ->
-  Async (http :: HTTP | eff) (Either String String)
+  Async (Either String String)
 get req = ContT \k ->
   runFn3 getImpl req (k <<< Right) (k <<< Left)
 ```
@@ -430,10 +422,10 @@ We can also combine parallel computations with sequential portions of code, by u
      Use this `Alternative` instance in conjunction with your `setTimeoutCont` function to define a function
 
      ```haskell
-     timeout :: forall a eff
+     timeout :: forall a
               . Milliseconds
-             -> Async (timeout :: TIMEOUT | eff) a
-             -> Async (timeout :: TIMEOUT | eff) (Maybe a)
+             -> Async a
+             -> Async (Maybe a)
      ```
 
      which returns `Nothing` if the specified computation does not provide a result within the given number of milliseconds.
