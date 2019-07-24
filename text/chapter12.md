@@ -245,7 +245,7 @@ We can run this computation using the `runContT` handler by providing a continua
 ```haskell
 import Prelude
 
-import Control.Monad.Eff.Console (logShow)
+import Effect.Console (logShow)
 import Control.Monad.Cont.Trans (runContT)
 
 main =
@@ -375,7 +375,7 @@ get req = ContT \k ->
 
 We've seen how to use the `ContT` monad and do notation to compose asynchronous computations in sequence. It would also be useful to be able to compose asynchronous computations _in parallel_.
 
-If we are using `ContT` to transform the `Eff` monad, then we can compute in parallel simply by initiating our two computations one after the other.
+If we are using `ContT` to transform the `Effect` monad, then we can compute in parallel simply by initiating our two computations one after the other.
 
 The `purescript-parallel` package defines a type class `Parallel` for monads like `Async` which support parallel execution. When we met applicative functors earlier in the book, we observed how applicative functors can be useful for combining parallel computations. In fact, an instance for `Parallel` defines a correspondence between a monad `m` (such as `Async`) and an applicative functor `f` which can be used to combine computations in parallel:
 
@@ -398,7 +398,7 @@ We can use the `parallel` function to create a version of our `readFileCont` act
 import Prelude
 import Control.Apply (lift2)
 import Control.Monad.Cont.Trans (runContT)
-import Control.Monad.Eff.Console (logShow)
+import Effect.Console (logShow)
 import Control.Monad.Parallel (parallel, sequential)
 
 main = flip runContT logShow do
