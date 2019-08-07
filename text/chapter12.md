@@ -262,8 +262,6 @@ main =
      ```haskell
      type Milliseconds = Int
 
-     foreign import data TIMEOUT :: Effect
-
      setTimeoutCont :: Milliseconds -> Async Unit
      ```
 
